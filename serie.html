@@ -1,0 +1,97 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="./../css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="home.html">
+                                Home
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Series
+                            </a>
+
+                            <ul class="dropdown-menu" id="elmenu">
+                            </ul>
+
+
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="nuevo.html">
+                                Nuevo Personaje
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="modificar.html">
+                                Modificar personaje
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div id="divContenido" style="text-align: center;">
+
+        </div>
+        <script src="./../js/bootstrap.bundle.js"></script>
+        <script src="./../js/jquery-3.7.1.min.js"></script>
+        <script>
+            var urlSeries = "https://apiseriespersonajes.azurewebsites.net/"
+            $(document).ready(function () {
+                var request = "api/series";
+                var html = "";
+                var html2 = "";
+
+                $.ajax({
+                    "url": urlSeries + request,
+                    "type": "GET",
+                    success: function (data) {
+                        $.each(data, function (index, serie) {
+                            var serieid = serie.idSerie
+                            html += "<li><a href='serie.html?id=" + serieid + "'>" + serie.nombre + "</a></li>";
+                        })
+                        $("#elmenu").html(html);
+                    }
+                })
+
+                function getSerieIdFromURL() {
+                    var urlParams = new URLSearchParams(window.location.search);
+                    return urlParams.get('id');
+                }
+
+                var serieid = getSerieIdFromURL();
+                var request2 = "api/series/" + serieid
+                
+                $.ajax({
+                    "url": urlSeries + request2,
+                    "type": "GET",
+                    success: function (data) {
+
+                        html2 += "<h1>" + data.nombre + "</h1>"
+                        html2 += "<h2><img width='750px' src=" + data.imagen + "></h2>"
+                        html2 += "<h2>Puntuacion: " + data.puntuacion + "</h2>"
+                        html2 += "<a class='btn btn-success' href='personajes.html?id=" + serieid + "'>Personajes</a>"
+
+                        $("#divContenido").html(html2);
+                    }
+                })
+            })
+        </script>
+
+    </div>
+</body>
+
+</html>
